@@ -27,6 +27,26 @@ the whole grader:
 ```
 
 A fresh starter reports `1/70 checks passed` and exits 1. A complete submission
-reports `70/70 checks passed` and exits 0. The one starting pass confirms that
-the vector stub doesn't contain a forbidden loop. `check.sh` is the whole grade.
-The expected table and grader are both in this repository.
+reports `70/70 checks passed` and exits 0. `check.sh` is the whole grade. The
+expected table and grader are both in this repository.
+
+## Reading a First Run
+
+Don't read `1/70` as progress. The single pass is the check that the vector
+stub contains no forbidden loop, which the empty stub satisfies by accident.
+Every prediction and every function check fails. Nothing has been done.
+
+The Actions badge on this repository is red for the same reason. It stays red
+until a pair completes the assignment, which is the correct state for a
+starter. Yours goes green when you finish.
+
+## Tested Toolchains
+
+Every row below is a run that happened.
+
+| Environment | Versions | Result |
+|---|---|---|
+| Windows 11 | R 4.6.1 | `1/70` on the starter; `70/70` with the instructor solution |
+| GitHub Actions, `ubuntu-latest` | R 4.6.1 through `r-lib/actions/setup-r` | `1/70` on the starter, matching the local run |
+| GitHub Actions, `macos-latest` | the same workflow | `1/70` on the starter |
+| GitHub Actions, `windows-latest` | the same workflow | `1/70` on the starter |
