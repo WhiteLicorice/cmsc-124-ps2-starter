@@ -1,0 +1,4 @@
+# R session leftovers. Nothing here belongs in a commit.
+.Rhistory
+.RData
+.Rproj.user/
