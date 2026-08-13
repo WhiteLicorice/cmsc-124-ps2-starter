@@ -80,18 +80,32 @@ for (row in seq_len(nrow(expected))) {
     }
 }
 
-source("src/analysis.R")
+tryCatch(
+    source("src/analysis.R"),
+    error = function(error) {
+        message("    src/analysis.R did not load: ", conditionMessage(error))
+    }
+)
 sample_scores <- c(Ada = 8, Grace = NA_real_, Linus = 12, Barbara = 4)
 expected_clean <- c(Ada = 16, Grace = 0, Linus = 20, Barbara = 8)
 
+body_source <- function(name) {
+    if (!exists(name, mode = "function")) {
+        return(NA_character_)
+    }
+    paste(deparse(body(get(name, mode = "function"))), collapse = "\n")
+}
+
 cat("\n== implementation ==\n")
-vector_source <- paste(deparse(body(clean_scores_vector)), collapse = "\n")
-scalar_source <- paste(deparse(body(clean_scores_scalar)), collapse = "\n")
+vector_source <- body_source("clean_scores_vector")
+scalar_source <- body_source("clean_scores_scalar")
 check("clean_scores_vector_model", function() {
-    !grepl("\\b(for|while|repeat|Map|lapply|sapply|vapply)\\b", vector_source)
+    !is.na(vector_source) &&
+        !grepl("\\b(for|while|repeat|Map|lapply|sapply|vapply)\\b", vector_source)
 })
 check("clean_scores_scalar_model", function() {
-    grepl("\\bfor\\s*\\(", scalar_source) &&
+    !is.na(scalar_source) &&
+        grepl("\\bfor\\s*\\(", scalar_source) &&
         !grepl("clean_scores_vector\\s*\\(", scalar_source)
 })
 check("clean_scores_vector", function() {
