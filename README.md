@@ -30,6 +30,38 @@ A fresh starter reports `1/70 checks passed` and exits 1. A complete submission
 reports `70/70 checks passed` and exits 0. `check.sh` is the whole grade. The
 expected table and grader are both in this repository.
 
+## Required Reading
+
+The manual carries the rules the 16 cases grade. It doesn't teach R from
+nothing, so these two go with it and are meant to be read while you work.
+
+*An Introduction to R*, the official guide from the R Core Team, documents the
+same R 4.6.1 this repository's workflow runs and uses no packages:
+
+```text
+https://cran.r-project.org/doc/manuals/R-intro.html
+```
+
+*Advanced R* by Hadley Wickham, chapter 3, "Vectors," covers coercion,
+attributes, factors, lists, and data frames in this problem set's vocabulary.
+Skip its tibble material, since nothing here uses one:
+
+```text
+https://adv-r.hadley.nz/vectors-chap.html
+```
+
+Watch the vocabulary in the official guide. It talks about an object's *mode*
+and never mentions `typeof()`, and the two disagree:
+
+```r
+mode(c(1L, 2L))     # "numeric"
+typeof(c(1L, 2L))   # "integer"
+```
+
+Half the cases have `integer` as their type, so read that guide for the rules
+and write your predictions in `typeof()`'s words. The manual's Required Reading
+section maps each topic to a section number.
+
 ## Reading a First Run
 
 Don't read `1/70` as progress. The single pass is the check that the vector
