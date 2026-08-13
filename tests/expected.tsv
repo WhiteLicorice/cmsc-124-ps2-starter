@@ -1,0 +1,17 @@
+id	value	type	length	dim
+P01	[1,2,3.5]	double	3	none
+P02	["1","2","TRUE"]	character	3	none
+P03	[11,22,31,42]	integer	4	none
+P04	[third=9,first=8]	integer	2	none
+P05	[4,9]	integer	2	none
+P06	[NA,12]	integer	2	none
+P07	factor[low,high,low];levels=[low,high]	integer	3	none
+P08	list{scores=[3,5],label=["A"]}	list	2	none
+P09	data.frame[2x2]{id=[1,2],passed=[TRUE,FALSE]}	list	2	2x2
+P10	matrix[2x3](11,22,13,24,15,26)	integer	6	2x3
+P11	[NA]	double	1	none
+P12	[9]	double	1	none
+P13	[1,2.5,3]	double	3	none
+P14	[14,0,15,8]	double	4	none
+P15	array[2x2x2](1,2,3,4,5,6,7,8)	integer	8	2x2x2
+P16	[]	integer	0	none
