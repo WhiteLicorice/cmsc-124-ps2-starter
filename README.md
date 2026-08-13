@@ -40,6 +40,18 @@ The Actions badge on this repository is red for the same reason. It stays red
 until a pair completes the assignment, which is the correct state for a
 starter. Yours goes green when you finish.
 
+## Exit Codes
+
+The course contract.
+
+| Code | Command | Meaning |
+|---|---|---|
+| 0 | `./check.sh` | all 70 checks passed |
+| 1 | `./check.sh` | at least one check failed |
+| 0 | `./run <case>` | the case was found and printed |
+| 64 | `./run <case>` | called with the wrong number of arguments |
+| 65 | `./run <case>` | the case id is unknown |
+
 ## Tested Toolchains
 
 Every row below is a run that happened.
