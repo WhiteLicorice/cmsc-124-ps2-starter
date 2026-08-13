@@ -40,6 +40,16 @@ The Actions badge on this repository is red for the same reason. It stays red
 until a pair completes the assignment, which is the correct state for a
 starter. Yours goes green when you finish.
 
+## When the Grader Stops Early
+
+`predictions.tsv` has to keep its five columns and all 16 ids in order. When it
+doesn't, the grader stops before the first check and prints why. A run that
+ends without a `== result ==` line never scored anything, so read the message
+and repair the table's columns and ids before you look at your answers.
+
+Fields are compared exactly. `double` passes and ` double` doesn't, so don't
+pad a cell to line the columns up in your editor.
+
 ## Exit Codes
 
 The course contract.
