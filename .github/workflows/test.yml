@@ -15,5 +15,7 @@ jobs:
           r-version: '4.6.1'
       - run: chmod +x run check.sh
         shell: bash
+      - run: ./run P10
+        shell: bash
       - run: ./check.sh
         shell: bash
