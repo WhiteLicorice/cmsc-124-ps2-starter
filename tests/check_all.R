@@ -148,6 +148,21 @@ check("summarize_roster", function() {
     identical(summarize_roster(roster), expected_summary)
 })
 
+cat("\n== analysis ==\n")
+analysis_text <- tryCatch(
+    paste(readLines("ANALYSIS.md", warn = FALSE), collapse = "\n"),
+    error = function(error) NA_character_
+)
+analysis_words <- function(text) {
+    words <- strsplit(trimws(text), "[[:space:]]+")[[1]]
+    length(words[nzchar(words)])
+}
+check("analysis_written", function() {
+    !is.na(analysis_text) &&
+        !grepl("Replace this paragraph", analysis_text) &&
+        { count <- analysis_words(analysis_text); count >= 300L && count <= 450L }
+})
+
 cat("\n== result ==\n")
 cat(passed, "/", total, " checks passed\n", sep = "")
 if (passed != total) {

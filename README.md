@@ -26,9 +26,11 @@ the whole grader:
 ./check.sh
 ```
 
-A fresh starter reports `1/70 checks passed` and exits 1. A complete submission
-reports `70/70 checks passed` and exits 0. `check.sh` is the whole grade. The
-expected table and grader are both in this repository.
+A fresh starter reports `1/71 checks passed` and exits 1. A complete submission
+reports `71/71 checks passed` and exits 0. `check.sh` is the whole grade. The
+expected table and grader are both in this repository. The 71st check verifies
+`ANALYSIS.md` is written, keeps no placeholder text, and falls in the 300 to 450
+word range.
 
 ## Required Reading
 
@@ -64,9 +66,10 @@ section maps each topic to a section number.
 
 ## Reading a First Run
 
-Don't read `1/70` as progress. The single pass is the check that the vector
+Don't read `1/71` as progress. The single pass is the check that the vector
 stub contains no forbidden loop, which the empty stub satisfies by accident.
-Every prediction and every function check fails. Nothing has been done.
+Every prediction, every function check, and the analysis check fail. Nothing has
+been done.
 
 The Actions badge on this repository is red for the same reason. It stays red
 until a pair completes the assignment, which is the correct state for a
@@ -88,7 +91,7 @@ The course contract.
 
 | Code | Command | Meaning |
 |---|---|---|
-| 0 | `./check.sh` | all 70 checks passed |
+| 0 | `./check.sh` | all 71 checks passed |
 | 1 | `./check.sh` | at least one check failed |
 | 0 | `./run <case>` | the case was found and printed |
 | 64 | `./run <case>` | called with the wrong number of arguments |
