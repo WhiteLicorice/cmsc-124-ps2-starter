@@ -3,6 +3,7 @@
 # before the grader starts.
 run text eol=lf
 check.sh text eol=lf
+lint text eol=lf
 
 # The grader compares these tables field by field.
 *.tsv text eol=lf

@@ -1,5 +1,27 @@
 source("cases/cases.R")
 source("scripts/support.R")
+source("scripts/validate_predictions.R")
+
+# A form fault in predictions.tsv survives the parse and then fails its
+# comparison, which reads like a wrong prediction rather than a stray space.
+# One trailing space per line fails all 16 dim checks that way. Name the faults
+# before scoring so nobody hunts for a coercion rule they already understood.
+# Only malformations are listed here. A cell still reading TODO already shows
+# as a failed check, and on a fresh starter every cell does.
+prediction_form <- validate_predictions("predictions.tsv")
+if (length(prediction_form$problems) > 0L) {
+    cat("== predictions.tsv form ==
+")
+    for (problem in prediction_form$problems) {
+        cat("  ", problem, "
+", sep = "")
+    }
+    cat("
+Those are formatting faults, not wrong answers.",
+        " Run ./lint to see this list on its own.
+
+", sep = "")
+}
 
 read_table <- function(path) {
     read.delim(

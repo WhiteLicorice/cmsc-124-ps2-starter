@@ -12,19 +12,28 @@ predictions.tsv         your value, type, length, and dimension predictions
 src/analysis.R          the four functions you implement
 tests/expected.tsv      every published expected result
 tests/check_all.R       the complete public grader
-scripts/                given runner and formatting code
-run  check.sh           the course run contract
+scripts/                given runner, formatting, and form-check code
+run  lint  check.sh     the course run contract
 ```
 
 ## First Run
 
-Fill and commit `predictions.tsv` before executing a case. Then run one case or
-the whole grader:
+Fill `predictions.tsv`, check its shape with `./lint`, and commit it before
+executing a case. Then run one case or the whole grader:
 
 ```bash
+./lint
 ./run P01
 ./check.sh
 ```
+
+`./lint` reads the table's form only. It never opens `tests/expected.tsv` and
+never evaluates a case, so it reveals no answers and is safe to run before the
+prediction commit. It catches a padded cell, a space inside a value, a tab an
+editor replaced with spaces, and a missing or reordered row. Those faults
+survive the parse and then fail their comparisons, so without it they read like
+wrong predictions. One trailing space per line fails all 16 `dim` checks.
+`./check.sh` lists the same faults before it scores.
 
 A fresh starter reports `1/71 checks passed` and exits 1. A complete submission
 reports `71/71 checks passed` and exits 0. `check.sh` is the whole grade. The
@@ -93,6 +102,8 @@ The course contract.
 |---|---|---|
 | 0 | `./check.sh` | all 71 checks passed |
 | 1 | `./check.sh` | at least one check failed |
+| 0 | `./lint` | `predictions.tsv` is well formed and complete |
+| 1 | `./lint` | the table is malformed or still holds a TODO |
 | 0 | `./run <case>` | the case was found and printed |
 | 64 | `./run <case>` | called with the wrong number of arguments |
 | 65 | `./run <case>` | the case id is unknown |
