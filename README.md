@@ -114,7 +114,7 @@ Every row below is a run that happened.
 
 | Environment | Versions | Result |
 |---|---|---|
-| Windows 11 | R 4.6.1 | `1/70` on the starter; `70/70` with the instructor solution |
-| GitHub Actions, `ubuntu-latest` | R 4.6.1 through `r-lib/actions/setup-r` | `1/70` on the starter, matching the local run |
-| GitHub Actions, `macos-latest` | the same workflow | `1/70` on the starter |
-| GitHub Actions, `windows-latest` | the same workflow | `1/70` on the starter |
+| Windows 11 | R 4.6.1 | `1/71` on the starter, `71/71` with the instructor solution |
+| GitHub Actions, `ubuntu-latest` | R 4.6.1 through `r-lib/actions/setup-r` | `1/71` on the starter, matching the local run |
+| GitHub Actions, `macos-latest` | the same workflow | `1/71` on the starter |
+| GitHub Actions, `windows-latest` | the same workflow | `1/71` on the starter |
