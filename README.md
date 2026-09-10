@@ -18,7 +18,7 @@ run  lint  check.sh     the course run contract
 
 ## First Run
 
-Fill `predictions.tsv`, check its shape with `./lint`, and commit it before
+Fill `predictions.tsv`, check its format with `./lint`, and commit it before
 executing a case. Then run one case or the whole grader:
 
 ```bash
@@ -27,19 +27,19 @@ executing a case. Then run one case or the whole grader:
 ./check.sh
 ```
 
-`./lint` reads the table's form only. It never opens `tests/expected.tsv` and
-never evaluates a case, so it reveals no answers and is safe to run before the
-prediction commit. It catches a padded cell, a space inside a value, a tab an
-editor replaced with spaces, and a missing or reordered row. Those faults
-survive the parse and then fail their comparisons, so without it they read like
-wrong predictions. One trailing space per line fails all 16 `dim` checks.
+`./lint` reads the table's form only. It never opens `tests/expected.tsv` or
+evaluates a case. You can run it before the prediction commit without revealing
+an answer. It catches a padded cell, a space inside a value, a tab replaced with
+spaces, and a missing or reordered row. Those faults otherwise look like wrong
+predictions. One trailing space per line fails all 16 `dim` checks.
 `./check.sh` lists the same faults before it scores.
 
 A fresh starter reports `1/71 checks passed` and exits 1. A complete submission
-reports `71/71 checks passed` and exits 0. `check.sh` is the whole grade. The
-expected table and grader are both in this repository. The 71st check verifies
-`ANALYSIS.md` is written, keeps no placeholder text, and falls in the 300 to 450
-word range.
+reports `71/71 checks passed` and exits 0. This is the complete public automated
+check. The rubric separately assesses analysis quality, prediction history,
+collaboration, and workflow evidence. The expected table and grader are both in
+this repository. The 71st check verifies that `ANALYSIS.md` contains no
+placeholder text and stays within the 300 to 450 word range.
 
 ## Required Reading
 

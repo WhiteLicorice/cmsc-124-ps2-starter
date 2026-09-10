@@ -39,9 +39,9 @@ clean_scores_vector <- function(scores) {
 #          including the names.
 #
 # This one must use a `for` loop and handle one element per pass, and it must not
-# call clean_scores_vector(). The grader checks both. The loop is the point: it
-# gives you a scalar evaluation model to set against R's vector model in
-# ANALYSIS.md.
+# call clean_scores_vector(). The grader checks both. The loop gives you an
+# element-at-a-time strategy to compare with R's vectorized strategy in
+# ANALYSIS.md. R still represents each selected value as a length-one vector.
 #
 #   clean_scores_scalar(sample_scores)
 #   #     Ada   Grace   Linus Barbara
@@ -114,9 +114,8 @@ build_roster <- function(student_names, groups, scores) {
 #   #  $ mean_by_group: Named num [1:2] 18 4
 #   #   ..- attr(*, "names")= chr [1:2] "red" "blue"
 #
-# Building mean_by_group with c() over two means you computed yourself is the
-# straightforward route. sapply() over split() also returns a named vector with
-# no dimensions.
+# split() can divide adjusted_score by every factor level. vapply() can then
+# compute one mean for each part and return a named vector with no dimensions.
 summarize_roster <- function(roster) {
     stop("TODO: implement summarize_roster()")
 }
