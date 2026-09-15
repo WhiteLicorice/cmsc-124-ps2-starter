@@ -80,9 +80,9 @@ stub contains no forbidden loop, which the empty stub satisfies by accident.
 Every prediction, every function check, and the analysis check fail. Nothing has
 been done.
 
-The Actions badge on this repository is red for the same reason. It stays red
-until a pair completes the assignment, which is the correct state for a
-starter. Yours goes green when you finish.
+The workflow run in this repository's Actions tab is red for the same reason.
+It stays red until a pair completes the assignment. That is the correct state
+for a starter. Your fork's run goes green when you finish.
 
 ## When the Grader Stops Early
 
