@@ -9,6 +9,7 @@ Problem Set 2. The assignment manual defines the work and the submission rules.
 ```text
 cases/cases.R           the 16 quoted expressions
 predictions.tsv         your value, type, length, and dimension predictions
+REASONING.md            the rule behind every case, written before you run
 src/analysis.R          the four functions you implement
 tests/expected.tsv      every published expected result
 tests/check_all.R       the complete public grader
@@ -18,8 +19,9 @@ run  lint  check.sh     the course run contract
 
 ## First Run
 
-Fill `predictions.tsv`, check its format with `./lint`, and commit it before
-executing a case. Then run one case or the whole grader:
+Fill `predictions.tsv`, write the rule behind each case in `REASONING.md`,
+check the table's format with `./lint`, and commit both before executing a case.
+Then run one case or the whole grader:
 
 ```bash
 ./lint
@@ -34,11 +36,12 @@ spaces, and a missing or reordered row. Those faults otherwise look like wrong
 predictions. One trailing space per line fails all 16 `dim` checks.
 `./check.sh` lists the same faults before it scores.
 
-A fresh starter reports `1/75 checks passed` and exits 1. A complete submission
-reports `75/75 checks passed` and exits 0. This is the complete public automated
+A fresh starter reports `1/76 checks passed` and exits 1. A complete submission
+reports `76/76 checks passed` and exits 0. This is the complete public automated
 check. The rubric separately assesses analysis quality, prediction history,
 collaboration, and workflow evidence. The expected table and grader are both in
-this repository. The 75th check verifies that `ANALYSIS.md` contains no
+this repository. One check verifies that `REASONING.md` holds an entry under
+every case heading. The 76th check verifies that `ANALYSIS.md` contains no
 placeholder text and stays within the 300 to 450 word range.
 
 ## Required Reading
@@ -75,7 +78,7 @@ section maps each topic to a section number.
 
 ## Reading a First Run
 
-Don't read `1/75` as progress. The single pass is the check that the vector
+Don't read `1/76` as progress. The single pass is the check that the vector
 stub contains no forbidden loop, which the empty stub satisfies by accident.
 Every prediction, every function check, and the analysis check fail. Nothing has
 been done.
@@ -100,7 +103,7 @@ The course contract.
 
 | Code | Command | Meaning |
 |---|---|---|
-| 0 | `./check.sh` | all 75 checks passed |
+| 0 | `./check.sh` | all 76 checks passed |
 | 1 | `./check.sh` | at least one check failed |
 | 0 | `./lint` | `predictions.tsv` is well formed and complete |
 | 1 | `./lint` | the table is malformed or still holds a TODO |
@@ -114,7 +117,7 @@ Every row below is a run that happened.
 
 | Environment | Versions | Result |
 |---|---|---|
-| Windows 11 | R 4.6.1 | `1/75` on the starter, `75/75` with the instructor solution |
-| GitHub Actions, `ubuntu-latest` | R 4.6.1 through `r-lib/actions/setup-r` | `1/75` on the starter, matching the local run |
-| GitHub Actions, `macos-latest` | the same workflow | `1/75` on the starter |
-| GitHub Actions, `windows-latest` | the same workflow | `1/75` on the starter |
+| Windows 11 | R 4.6.1 | `1/76` on the starter, `76/76` with the instructor solution |
+| GitHub Actions, `ubuntu-latest` | R 4.6.1 through `r-lib/actions/setup-r` | `1/76` on the starter, matching the local run |
+| GitHub Actions, `macos-latest` | the same workflow | `1/76` on the starter |
+| GitHub Actions, `windows-latest` | the same workflow | `1/76` on the starter |
