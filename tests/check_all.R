@@ -170,6 +170,51 @@ check("summarize_roster", function() {
     identical(summarize_roster(roster), expected_summary)
 })
 
+# The sample above is the one every worked example uses, so a function that
+# returns those literals passes it without implementing anything. These four
+# checks use different inputs, the same way, so hard-coded sample results fail.
+alternate_scores <- c(X = 1, Missing = NA_real_, Capped = 11)
+expected_alternate_clean <- c(X = 2, Missing = 0, Capped = 20)
+
+check("clean_scores_vector_alternate", function() {
+    identical(clean_scores_vector(alternate_scores), expected_alternate_clean)
+})
+check("clean_scores_scalar_alternate", function() {
+    identical(clean_scores_scalar(alternate_scores), expected_alternate_clean)
+})
+
+expected_alternate_roster <- data.frame(
+    name = c("A", "B", "C"),
+    group = factor(c("gold", "bronze", "silver"),
+                   levels = c("gold", "bronze", "silver")),
+    raw_score = c(1L, 2L, 7L),
+    adjusted_score = c(2, 4, 14),
+    passed = c(FALSE, FALSE, TRUE),
+    stringsAsFactors = FALSE
+)
+check("build_roster_alternate", function() {
+    identical(
+        build_roster(c("A", "B", "C"),
+                     c("gold", "bronze", "silver"),
+                     c(A = 1L, B = 2L, C = 7L)),
+        expected_alternate_roster
+    )
+})
+
+expected_alternate_summary <- list(
+    rows = 3L,
+    missing_raw = 0L,
+    mean_adjusted = 20 / 3,
+    passed = "C",
+    mean_by_group = c(gold = 2, bronze = 4, silver = 14)
+)
+check("summarize_roster_alternate", function() {
+    identical(
+        summarize_roster(expected_alternate_roster),
+        expected_alternate_summary
+    )
+})
+
 cat("\n== analysis ==\n")
 analysis_text <- tryCatch(
     paste(readLines("ANALYSIS.md", warn = FALSE), collapse = "\n"),
