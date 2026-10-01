@@ -235,6 +235,48 @@ analysis_words <- function(text) {
     words <- strsplit(trimws(text), "[[:space:]]+")[[1]]
     length(words[nzchar(words)])
 }
+reasoning_placeholder <- "Replace this line with the rule that decides this case."
+reasoning_text <- tryCatch(
+    paste(readLines("REASONING.md", warn = FALSE), collapse = "\n"),
+    error = function(error) NA_character_
+)
+reasoning_problem <- function(text) {
+    if (is.na(text)) {
+        return("REASONING.md is missing.")
+    }
+    lines <- trimws(strsplit(text, "\n", fixed = TRUE)[[1]])
+    headings <- paste0("## P", sprintf("%02d", 1:16))
+    labels <- sprintf("P%02d", 1:16)
+    positions <- match(headings, lines)
+    for (index in seq_along(headings)) {
+        if (is.na(positions[[index]])) {
+            return(paste0("REASONING.md is missing the heading ", labels[[index]], "."))
+        }
+        if (index > 1L && positions[[index]] < positions[[index - 1L]]) {
+            return(paste0("REASONING.md puts ", labels[[index]], " out of order."))
+        }
+    }
+    for (index in seq_along(headings)) {
+        start <- positions[[index]] + 1L
+        end <- if (index < length(headings)) positions[[index + 1L]] - 1L else length(lines)
+        section <- if (start <= end) lines[start:end] else character(0)
+        section <- section[nzchar(section)]
+        if (any(section == reasoning_placeholder)) {
+            return(paste0("REASONING.md still holds the placeholder under ", labels[[index]], "."))
+        }
+        if (length(section) == 0L) {
+            return(paste0("REASONING.md has an empty section under ", labels[[index]], "."))
+        }
+    }
+    NA_character_
+}
+check("reasoning_written", function() {
+    problem <- reasoning_problem(reasoning_text)
+    if (!is.na(problem)) {
+        cat("    ", problem, "\n", sep = "")
+    }
+    is.na(problem)
+})
 check("analysis_written", function() {
     !is.na(analysis_text) &&
         !grepl("Replace this paragraph", analysis_text) &&
