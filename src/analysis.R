@@ -2,8 +2,8 @@
 #
 # Each stub below carries what it receives, what it must return, the constraint
 # the grader enforces on it, and one worked call using the published sample. The
-# sample is the same one tests/check_all.R runs, so a function that reproduces
-# the call below passes its check.
+# grader calls each function with this sample and with one other input. A
+# function that reproduces the sample but breaks the rules fails the second call.
 #
 # The published sample, used by every example here:
 #

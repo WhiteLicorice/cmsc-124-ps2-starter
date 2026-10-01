@@ -183,36 +183,47 @@ check("clean_scores_scalar_alternate", function() {
     identical(clean_scores_scalar(alternate_scores), expected_alternate_clean)
 })
 
-expected_alternate_roster <- data.frame(
-    name = c("A", "B", "C"),
-    group = factor(c("gold", "bronze", "silver"),
-                   levels = c("gold", "bronze", "silver")),
-    raw_score = c(1L, 2L, 7L),
-    adjusted_score = c(2, 4, 14),
-    passed = c(FALSE, FALSE, TRUE),
-    stringsAsFactors = FALSE
-)
+# adjusted_score is the cleaner's own output, so build it with the cleaner rather
+# than a literal. The manual fixes no storage type for the cleaning result, so a
+# cleaner that keeps integers for integer input passes here too. name, group, and
+# raw_score stay literal, since those have a fixed required form.
+alternate_names <- c("A", "B", "C")
+alternate_groups <- c("gold", "bronze", "silver")
+alternate_raw_scores <- c(A = 1L, B = 2L, C = 6L)
+
 check("build_roster_alternate", function() {
+    adjusted <- unname(clean_scores_vector(alternate_raw_scores))
+    expected <- data.frame(
+        name = alternate_names,
+        group = factor(alternate_groups, levels = alternate_groups),
+        raw_score = c(1L, 2L, 6L),
+        adjusted_score = adjusted,
+        passed = adjusted >= 12,
+        stringsAsFactors = FALSE
+    )
     identical(
-        build_roster(c("A", "B", "C"),
-                     c("gold", "bronze", "silver"),
-                     c(A = 1L, B = 2L, C = 7L)),
-        expected_alternate_roster
+        build_roster(alternate_names, alternate_groups, alternate_raw_scores),
+        expected
     )
 })
 
 expected_alternate_summary <- list(
     rows = 3L,
     missing_raw = 0L,
-    mean_adjusted = 20 / 3,
+    mean_adjusted = 6,
     passed = "C",
-    mean_by_group = c(gold = 2, bronze = 4, silver = 14)
+    mean_by_group = c(gold = 2, bronze = 4, silver = 12)
 )
 check("summarize_roster_alternate", function() {
-    identical(
-        summarize_roster(expected_alternate_roster),
-        expected_alternate_summary
+    alternate_roster <- data.frame(
+        name = alternate_names,
+        group = factor(alternate_groups, levels = alternate_groups),
+        raw_score = c(1L, 2L, 6L),
+        adjusted_score = c(2, 4, 12),
+        passed = c(FALSE, FALSE, TRUE),
+        stringsAsFactors = FALSE
     )
+    identical(summarize_roster(alternate_roster), expected_alternate_summary)
 })
 
 cat("\n== analysis ==\n")
