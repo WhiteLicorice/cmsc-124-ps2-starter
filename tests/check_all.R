@@ -111,6 +111,23 @@ tryCatch(
 sample_scores <- c(Ada = 8, Grace = NA_real_, Linus = 12, Barbara = 4)
 expected_clean <- c(Ada = 16, Grace = 0, Linus = 20, Barbara = 8)
 
+# calls_named(node, forbidden) is TRUE when the expression calls a function
+# in forbidden, as f(...), pkg::f(...), or pkg:::f(...). It reads parsed calls.
+# A string with a forbidden word in it does not count. A text match on the
+# deparsed body failed the word "for" inside an error message.
+calls_named <- function(node, forbidden) {
+    if (!is.call(node)) return(FALSE)
+    head <- node[[1]]
+    if (is.call(head) && length(head) == 3L && is.symbol(head[[1]]) &&
+        as.character(head[[1]]) %in% c("::", ":::")) {
+        head <- head[[3]]
+    }
+    if (is.symbol(head) && as.character(head) %in% forbidden) return(TRUE)
+    any(vapply(as.list(node), function(child) {
+        if (identical(child, quote(expr = ))) FALSE else calls_named(child, forbidden)
+    }, logical(1)))
+}
+
 body_source <- function(name) {
     if (!exists(name, mode = "function")) {
         return(NA_character_)
@@ -211,10 +228,13 @@ vector_source <- body_source("clean_scores_vector")
 scalar_source <- body_source("clean_scores_scalar")
 check("clean_scores_vector_model", function() {
     !is.na(vector_source) &&
-        !grepl("\\b(for|while|repeat|Map|lapply|sapply|vapply)\\b", vector_source)
+        !calls_named(body(clean_scores_vector),
+            c("for", "while", "repeat", "Map", "lapply", "sapply", "vapply"))
 })
 check("clean_scores_scalar_model", function() {
-    if (is.na(scalar_source) || grepl("clean_scores_vector\\s*\\(", scalar_source)) {
+    if (is.na(scalar_source) ||
+        calls_named(body(get("clean_scores_scalar", mode = "function")),
+            "clean_scores_vector")) {
         return(FALSE)
     }
     fn <- tryCatch(
