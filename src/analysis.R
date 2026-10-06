@@ -17,9 +17,9 @@
 #          every NA has become 0 and every other element is min(2 * score, 20).
 #
 # Vector expressions and subassignment only. No for, while, repeat, Map, lapply,
-# sapply, or vapply. The grader deparses this function's body and fails the run
-# when it finds one of those words, so the constraint is checked whether or not
-# the numbers come out right.
+# sapply, or vapply. The grader reads the calls in this function's body and fails
+# the run when it finds a call to one of those. A word in a string does not
+# count. The constraint is checked whether or not the numbers come out right.
 #
 #   clean_scores_vector(sample_scores)
 #   #     Ada   Grace   Linus Barbara
