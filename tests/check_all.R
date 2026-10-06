@@ -146,6 +146,41 @@ review_clean <- function(fn) {
     }, logical(1)))
 }
 
+# clean_scores_scalar() must evaluate one element per pass. The loop domain is
+# what separates that model from a whole-vector body hidden behind a loop that
+# never runs, such as for (i in integer(0)) {}. These helpers read the loop
+# domains out of the deparsed body and reject any domain that names no variable.
+# seq_along(scores) and seq_len(n) name a variable. integer(0), numeric(0), NULL,
+# c(), 1:0, and seq_len(0) name none. This does not prove that every iteration
+# reads one element.
+loop_domains <- function(node) {
+    if (!is.call(node)) {
+        return(list())
+    }
+    domains <- if (identical(node[[1]], as.name("for"))) list(node[[3]]) else list()
+    for (part in as.list(node)[-1]) {
+        domains <- c(domains, loop_domains(part))
+    }
+    domains
+}
+mentions_variable <- function(node) {
+    if (is.symbol(node)) {
+        return(!identical(as.character(node), "NULL"))
+    }
+    if (!is.call(node)) {
+        return(FALSE)
+    }
+    any(vapply(as.list(node)[-1], mentions_variable, logical(1)))
+}
+scalar_loop_is_grounded <- function(source) {
+    expression <- tryCatch(parse(text = source), error = function(error) NULL)
+    if (is.null(expression)) {
+        return(FALSE)
+    }
+    domains <- loop_domains(expression[[1]])
+    length(domains) > 0L && all(vapply(domains, mentions_variable, logical(1)))
+}
+
 cat("\n== implementation ==\n")
 vector_source <- body_source("clean_scores_vector")
 scalar_source <- body_source("clean_scores_scalar")
@@ -155,7 +190,7 @@ check("clean_scores_vector_model", function() {
 })
 check("clean_scores_scalar_model", function() {
     !is.na(scalar_source) &&
-        grepl("\\bfor\\s*\\(", scalar_source) &&
+        scalar_loop_is_grounded(scalar_source) &&
         !grepl("clean_scores_vector\\s*\\(", scalar_source)
 })
 check("clean_scores_vector", function() {
