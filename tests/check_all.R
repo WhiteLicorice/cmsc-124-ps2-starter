@@ -146,39 +146,61 @@ review_clean <- function(fn) {
     }, logical(1)))
 }
 
-# clean_scores_scalar() must evaluate one element per pass. The loop domain is
-# what separates that model from a whole-vector body hidden behind a loop that
-# never runs, such as for (i in integer(0)) {}. These helpers read the loop
-# domains out of the deparsed body and reject any domain that names no variable.
-# seq_along(scores) and seq_len(n) name a variable. integer(0), numeric(0), NULL,
-# c(), 1:0, and seq_len(0) name none. This does not prove that every iteration
-# reads one element.
-loop_domains <- function(node) {
-    if (!is.call(node)) {
-        return(list())
-    }
-    domains <- if (identical(node[[1]], as.name("for"))) list(node[[3]]) else list()
-    for (part in as.list(node)[-1]) {
-        domains <- c(domains, loop_domains(part))
-    }
-    domains
+# clean_scores_scalar() must evaluate one element per pass. What the code does
+# when it runs decides that. This check counts loop iterations at run time. It
+# does not read the loop domain. A saved constant or a legal literal domain
+# defeats any domain rule. The rewrite wraps each for loop body so every pass
+# increments a counter. The counter sits in an environment spliced into the
+# rewrite. No name in student scope reaches it. A loop that never runs counts
+# zero, however its domain is written.
+#
+# The probe is a length-4 numeric vector with no missing value. A length-4 probe
+# keeps the four never-running faults below four passes. A probe with no missing
+# value keeps which(!is.na(scores)) at four passes. The doubled probe values stay
+# at or below 16. A cap threshold of 16 or higher therefore leaves the probe
+# result unchanged, and the cap variants stay at 74/76.
+#
+# The check sums iterations across all loops. Nested loops inflate that total. A
+# per-loop maximum would instead reject a legal nested loop, so the sum is
+# deliberate.
+probe_scores <- c(A = 8, B = 4, C = 7, D = 3)
+probe_clean <- c(A = 16, B = 8, C = 14, D = 6)
+
+record_iteration <- function(counter) {
+    counter$total <- counter$total + 1L
+    invisible(NULL)
 }
-mentions_variable <- function(node) {
-    if (is.symbol(node)) {
-        return(!identical(as.character(node), "NULL"))
-    }
+
+instrument_for_loops <- function(node, counter) {
     if (!is.call(node)) {
-        return(FALSE)
+        return(node)
     }
-    any(vapply(as.list(node)[-1], mentions_variable, logical(1)))
+    if (identical(node[[1]], as.name("for"))) {
+        node[[3]] <- instrument_for_loops(node[[3]], counter)
+        node[[4]] <- instrument_for_loops(node[[4]], counter)
+        node[[4]] <- as.call(list(
+            as.name("{"),
+            as.call(list(record_iteration, counter)),
+            node[[4]]
+        ))
+        return(node)
+    }
+    for (index in seq_along(node)) {
+        if (!identical(node[[index]], quote(expr = )) &&
+            !is.null(node[[index]])) {
+            node[[index]] <- instrument_for_loops(node[[index]], counter)
+        }
+    }
+    node
 }
-scalar_loop_is_grounded <- function(source) {
-    expression <- tryCatch(parse(text = source), error = function(error) NULL)
-    if (is.null(expression)) {
-        return(FALSE)
-    }
-    domains <- loop_domains(expression[[1]])
-    length(domains) > 0L && all(vapply(domains, mentions_variable, logical(1)))
+
+loops_cover_each_element <- function(fn) {
+    counter <- new.env(parent = emptyenv())
+    counter$total <- 0L
+    instrumented <- fn
+    body(instrumented) <- instrument_for_loops(body(fn), counter)
+    identical(instrumented(probe_scores), probe_clean) &&
+        counter$total >= length(probe_scores)
 }
 
 cat("\n== implementation ==\n")
@@ -189,9 +211,14 @@ check("clean_scores_vector_model", function() {
         !grepl("\\b(for|while|repeat|Map|lapply|sapply|vapply)\\b", vector_source)
 })
 check("clean_scores_scalar_model", function() {
-    !is.na(scalar_source) &&
-        scalar_loop_is_grounded(scalar_source) &&
-        !grepl("clean_scores_vector\\s*\\(", scalar_source)
+    if (is.na(scalar_source) || grepl("clean_scores_vector\\s*\\(", scalar_source)) {
+        return(FALSE)
+    }
+    fn <- tryCatch(
+        get("clean_scores_scalar", mode = "function"),
+        error = function(error) NULL
+    )
+    !is.null(fn) && loops_cover_each_element(fn)
 })
 check("clean_scores_vector", function() {
     identical(clean_scores_vector(sample_scores), expected_clean) &&
