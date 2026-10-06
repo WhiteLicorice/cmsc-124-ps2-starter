@@ -118,6 +118,34 @@ body_source <- function(name) {
     paste(deparse(body(get(name, mode = "function"))), collapse = "\n")
 }
 
+# The two cleaner checks below compare against the same sample every worked
+# example uses, so a cleaner that mishandles empty, all-missing, NaN, or
+# single-element input still matches it. These five pairs cover those inputs.
+# review_clean() joins them to the two existing checks rather than adding a check
+# of its own, so the total stays at 76.
+review_inputs <- list(
+    numeric(0),
+    c(A = 3),
+    c(A = NA_real_, B = NA_real_),
+    c(A = NaN, B = 3),
+    c(A = 9.5, B = 10, C = 10.25)
+)
+review_outputs <- list(
+    numeric(0),
+    c(A = 6),
+    c(A = 0, B = 0),
+    c(A = 0, B = 6),
+    c(A = 19, B = 20, C = 20)
+)
+review_clean <- function(fn) {
+    all(vapply(seq_along(review_inputs), function(index) {
+        tryCatch(
+            identical(fn(review_inputs[[index]]), review_outputs[[index]]),
+            error = function(error) FALSE
+        )
+    }, logical(1)))
+}
+
 cat("\n== implementation ==\n")
 vector_source <- body_source("clean_scores_vector")
 scalar_source <- body_source("clean_scores_scalar")
@@ -131,10 +159,12 @@ check("clean_scores_scalar_model", function() {
         !grepl("clean_scores_vector\\s*\\(", scalar_source)
 })
 check("clean_scores_vector", function() {
-    identical(clean_scores_vector(sample_scores), expected_clean)
+    identical(clean_scores_vector(sample_scores), expected_clean) &&
+        review_clean(clean_scores_vector)
 })
 check("clean_scores_scalar", function() {
-    identical(clean_scores_scalar(sample_scores), expected_clean)
+    identical(clean_scores_scalar(sample_scores), expected_clean) &&
+        review_clean(clean_scores_scalar)
 })
 
 expected_roster <- data.frame(
