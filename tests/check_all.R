@@ -119,8 +119,9 @@ body_source <- function(name) {
 }
 
 # The two cleaner checks below compare against the same sample every worked
-# example uses, so a cleaner that mishandles empty, all-missing, NaN, or
-# single-element input still matches it. These five pairs cover those inputs.
+# example uses, so a cleaner that mishandles empty, all-missing, NaN,
+# single-element, or unnamed input still matches it. These six pairs cover
+# those inputs.
 # review_clean() joins them to the two existing checks rather than adding a check
 # of its own, so the total stays at 76.
 review_inputs <- list(
@@ -128,14 +129,16 @@ review_inputs <- list(
     c(A = 3),
     c(A = NA_real_, B = NA_real_),
     c(A = NaN, B = 3),
-    c(A = 9.5, B = 10, C = 10.25)
+    c(A = 9.5, B = 10, C = 10.25),
+    c(3, NA_real_, 25)
 )
 review_outputs <- list(
     numeric(0),
     c(A = 6),
     c(A = 0, B = 0),
     c(A = 0, B = 6),
-    c(A = 19, B = 20, C = 20)
+    c(A = 19, B = 20, C = 20),
+    c(6, 0, 20)
 )
 review_clean <- function(fn) {
     all(vapply(seq_along(review_inputs), function(index) {
