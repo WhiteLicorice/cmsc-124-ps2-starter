@@ -13,7 +13,7 @@
 #
 # scores:  a numeric vector, possibly carrying a `names` attribute, and possibly
 #          holding NA values.
-# returns: a numeric vector of the same length, carrying the same names, where
+# returns: a double vector of the same length, carrying the same names, where
 #          every NA has become 0 and every other element is min(2 * score, 20).
 #
 # Vector expressions and subassignment only. No for, while, repeat, Map, lapply,

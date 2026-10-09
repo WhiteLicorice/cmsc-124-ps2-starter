@@ -303,9 +303,9 @@ check("clean_scores_scalar_alternate", function() {
 })
 
 # adjusted_score is the cleaner's own output, so build it with the cleaner rather
-# than a literal. The manual fixes no storage type for the cleaning result, so a
-# cleaner that keeps integers for integer input passes here too. name, group, and
-# raw_score stay literal, since those have a fixed required form.
+# than a literal. The cleaner checks above already hold its values and its double
+# storage, so this check tests only the roster. name, group, and raw_score stay
+# literal, since those have a fixed required form.
 alternate_names <- c("A", "B", "C")
 alternate_groups <- c("gold", "bronze", "silver")
 alternate_raw_scores <- c(A = 1L, B = 2L, C = 6L)
