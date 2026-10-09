@@ -135,10 +135,12 @@ body_source <- function(name) {
     paste(deparse(body(get(name, mode = "function"))), collapse = "\n")
 }
 
-# The two cleaner checks below compare against the same sample every worked
-# example uses, so a cleaner that mishandles empty, all-missing, NaN,
-# single-element, unnamed, negative, or infinite input still matches it. These
-# eight pairs cover those inputs.
+# The two cleaner checks below compare against the sample that every worked
+# example uses. A cleaner can match that sample and still mishandle other input.
+# These nine pairs cover empty, all-missing, NaN, single-element, unnamed,
+# negative, infinite, and integer input. The integer pair checks the double
+# return type. No pair holds integer(0). The stub tells students to copy scores,
+# and that copy keeps integer storage when the loop never runs.
 # review_clean() joins them to the two existing checks rather than adding a check
 # of its own, so the total stays at 76.
 review_inputs <- list(
@@ -149,7 +151,8 @@ review_inputs <- list(
     c(A = 9.5, B = 10, C = 10.25),
     c(3, NA_real_, 25),
     c(A = -1, B = 3),
-    c(A = Inf, B = 3)
+    c(A = Inf, B = 3),
+    c(A = 3L)
 )
 review_outputs <- list(
     numeric(0),
@@ -159,7 +162,8 @@ review_outputs <- list(
     c(A = 19, B = 20, C = 20),
     c(6, 0, 20),
     c(A = -2, B = 6),
-    c(A = 20, B = 6)
+    c(A = 20, B = 6),
+    c(A = 6)
 )
 review_clean <- function(fn) {
     all(vapply(seq_along(review_inputs), function(index) {
