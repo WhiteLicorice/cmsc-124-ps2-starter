@@ -47,10 +47,12 @@ clean_scores_vector <- function(scores) {
 #   #     Ada   Grace   Linus Barbara
 #   #      16       0      20       8
 #
-# Copy `scores` into a local vector and write each result back with
-# out[[i]] <- value, which keeps the names attached. Accumulating into a fresh
-# vector with out <- c(out, value) drops them, and the check compares with
-# identical(), which notices.
+# Copy `scores` into a local double vector that keeps the names:
+# out <- setNames(as.double(scores), names(scores)). A bare as.double() drops
+# the names. A plain copy of integer input stays integer when the loop never
+# writes to it. Write each result back with out[[i]] <- value, which keeps the
+# names attached. Accumulating into a fresh vector with out <- c(out, value)
+# drops them, and the check compares with identical(), which notices.
 clean_scores_scalar <- function(scores) {
     stop("TODO: implement clean_scores_scalar()")
 }
